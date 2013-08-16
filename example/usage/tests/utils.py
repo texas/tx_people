@@ -1,25 +1,12 @@
-import random
-
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from tx_people import utils
 
+from ._utils import RandomDatesMixin
 
-class valid_reduced_date_TestCase(TestCase):
-    @property
-    def random_year(self):
-        return '{0}'.format(random.randint(1000, 3000))
 
-    @property
-    def random_month(self):
-        return '{0:02d}'.format(random.randint(1, 12))
-
-    @property
-    def random_day(self):
-        # Avoid possible issues with February dates by only going to 28
-        return '{0:02d}'.format(random.randint(1, 28))
-
+class valid_reduced_date_TestCase(RandomDatesMixin, TestCase):
     def test_accepts_a_valid_year(self):
         self.assertEqual(None, utils.valid_reduced_date(self.random_year))
 
