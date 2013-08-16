@@ -26,7 +26,8 @@ class ReducedDateValidator(RegexValidator):
                 return
             except ValueError:
                 pass
-        raise ValidationError('')
+        raise ValidationError('Value must be a valid date',
+                code='invalid_choice')
 
 
 valid_reduced_date = ReducedDateValidator()

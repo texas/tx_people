@@ -66,3 +66,16 @@ class valid_reduced_date_TestCase(TestCase):
     def test_passes_on_feb_29_2012(self):
         valid_date = '2012-02-29'
         self.assertEqual(None, utils.valid_reduced_date(valid_date))
+
+    def test_raised_exceptions_on_invalid_date_different(self):
+        invalid_date = '2013-02-29'
+        with self.assertRaises(ValidationError) as e:
+            utils.valid_reduced_date(invalid_date)
+        expected = 'Value must be a valid date'
+        self.assertEqual(expected, e.exception.messages[0])
+
+    def test_raised_exception_on_invalid_date_has_code_invalid_value(self):
+        invalid_date = '2013-02-29'
+        with self.assertRaises(ValidationError) as e:
+            utils.valid_reduced_date(invalid_date)
+        self.assertEqual('invalid_choice', e.exception.code)
