@@ -1,3 +1,4 @@
+from .fields import *
 from .managers import *
 from .models import *
 from .query import *
