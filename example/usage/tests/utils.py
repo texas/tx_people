@@ -57,3 +57,12 @@ class valid_reduced_date_TestCase(TestCase):
             utils.valid_reduced_date(invalid_date)
         expected = 'Value must follow YYYY-MM-DD pattern'
         self.assertEqual(expected, e.exception.messages[0])
+
+    def test_raises_on_feb_29_2013(self):
+        invalid_date = '2013-02-29'
+        with self.assertRaises(ValidationError):
+            utils.valid_reduced_date(invalid_date)
+
+    def test_passes_on_feb_29_2012(self):
+        valid_date = '2012-02-29'
+        self.assertEqual(None, utils.valid_reduced_date(valid_date))
