@@ -82,6 +82,8 @@ class ContactDetail(TimeTrackingMixin, models.Model):
 class Organization(TimeTrackingMixin, models.Model):
     """
     Represents an Organization
+
+    See: http://popoloproject.com/schemas/organization.json
     """
 
     name = models.CharField(max_length=250)
