@@ -135,9 +135,9 @@ class Person(TimeTrackingMixin, models.Model):
     organization = models.ManyToManyField(Organization, through=Membership,
             related_name='member')
     name = models.CharField(max_length=250)
-    other_names = models.OptionalManyToManyField(OtherNames,
+    other_names = fields.OptionalManyToManyField(OtherNames,
             related_name='people')
-    identifiers = models.OptionalManyToManyField(Identifier,
+    identifiers = fields.OptionalManyToManyField(Identifier,
             related_name='people')
     family_name = fields.OptionalCharField(max_length=250)
     given_name = fields.OptionalCharField(max_length=250)
@@ -151,7 +151,7 @@ class Person(TimeTrackingMixin, models.Model):
     birth_date = fields.OptionalReducedDateField()
     death_date = fields.OptionalReducedDateField()
     image = models.ImageField(null=True, blank=True)
-    summary = models.OptionalCharField(max_length=250)
+    summary = fields.OptionalCharField(max_length=250)
     biography = models.TextField(blank=True, null=True)
     contact_details = fields.OptionalManyToManyField(ContactDetail,
             related_name='people')
