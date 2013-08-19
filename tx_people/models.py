@@ -4,65 +4,23 @@ from django.db import models
 from . import fields
 
 
-class Organization(models.Model):
+class ReducedDateStartAndEndMixin(models.Model):
+    class Meta:
+        abstract = True
+
+    start_date = fields.ReducedDateField()
+    end_date = fields.ReducedDateField()
+
+
+class TimeTrackingMixin(models.Model):
     """
-    Represents an Organization
+    Mixin for adding a created_at and updated_at field
     """
+    class Meta:
+        abstract = True
 
-    id = models.CharField(max_length=250, primary_key=True)
-    name = models.CharField(max_length=250)
-    classification = models.CharField(max_length=250, null=True, blank=True)
-    parent = models.ForeignKey('self', related_name='children', null=True,
-            blank=True)
-    founding_date = fields.ReducedDateField(null=True, blank=True)
-    dissolution_date = fields.ReducedDateField(null=True, blank=True)
-    created_at = models.DateField(auto_now=True)
-    updated_at = models.DateField(auto_now_add=True)
-
-
-class OrganizationSource(models.Model):
-    """
-    # TODO
-    """
-    link = models.URLField()
-    organization = models.ForeignKey(Organization, related_name='sources')
-
-
-class Post(models.Model):
-    organization = models.ForeignKey(Organization, related_name='posts')
-
-
-class Membership(models.Model):
-    organization = models.ForeignKey(Organization, related_name='members')
-    member = models.ForeignKey('Person', related_name='memberships')
-    post = models.ForeignKey(Post, related_name='members', null=True,
-            blank=True)
-
-
-class Person(models.Model):
-    organization = models.ManyToManyField(Organization, through=Membership,
-            related_name='member')
-
-
-class ContactDetail(models.Model):
-    """
-    Contact Details for Persons or Organizations
-
-    See: http://popoloproject.com/schemas/contact_detail.json
-    """
-
-    person = models.ForeignKey(Person, related_name='contact_details')
-    label = models.CharField(max_length=250, null=True, blank=True)
-    type = models.CharField(max_length=250)
-    value = models.CharField(max_length=250)
-    note = models.TextField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-
-class ContactDetailSources(models.Model):
-    link = models.URLField()
-    contact_detail = models.ForeignKey(ContactDetail, related_name='sources')
+    created_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
 
 
 class OtherNames(models.Model):
@@ -76,8 +34,6 @@ class OtherNames(models.Model):
     end_date = models.DateField(null=True, blank=True)
     note = models.TextField(null=True, blank=True)
 
-    # TODO: allow relationship to an Organization or Person
-
 
 class Identifier(models.Model):
     """
@@ -87,8 +43,6 @@ class Identifier(models.Model):
     """
     identifier = models.CharField(max_length=250)
     scheme = models.CharField(max_length=250, null=True, blank=True)
-
-    # TODO: allow relationship to an Organization or Person
 
 
 class Link(models.Model):
@@ -100,8 +54,6 @@ class Link(models.Model):
     url = models.URLField()
     note = models.TextField()
 
-    # TODO: allow relationship to an Organization or Person
-
 
 class Source(models.Model):
     """
@@ -111,6 +63,95 @@ class Source(models.Model):
     ``Organization`` models.
     """
     link = models.URLField()
-    people = fields.SourceRelationship(Person)
-    posts = fields.SourceRelationship(Post)
-    organizations = fields.SourceRelationship(Organization)
+
+
+class ContactDetail(TimeTrackingMixin, models.Model):
+    """
+    Contact Details for Persons, Organizations, or Posts
+
+    See: http://popoloproject.com/schemas/contact_detail.json
+    """
+    label = models.CharField(max_length=250, null=True, blank=True)
+    type = models.CharField(max_length=250)
+    value = models.CharField(max_length=250)
+    note = models.TextField(null=True, blank=True)
+    sources = fields.OptionalManyToManyField(Source,
+        related_name='contact_detail')
+
+
+class Organization(TimeTrackingMixin, models.Model):
+    """
+    Represents an Organization
+    """
+
+    name = models.CharField(max_length=250)
+    other_name = fields.OptionalManyToManyField(OtherNames,
+            related_name='organizations')
+    identifiers = fields.OptionalManyToManyField(Identifier,
+            related_name='organizations')
+    classification = models.CharField(max_length=250, null=True, blank=True)
+    parent = models.ForeignKey('self', related_name='children', null=True,
+            blank=True)
+    founding_date = fields.ReducedDateField(null=True, blank=True)
+    dissolution_date = fields.ReducedDateField(null=True, blank=True)
+    contact_details = fields.OptionalManyToManyField(ContactDetail,
+            related_name='organizations')
+    links = fields.OptionalManyToManyField(Link, related_name='organizations')
+    sources = fields.OptionalManyToManyField(Source,
+            related_name='organizations')
+
+
+class Post(ReducedDateStartAndEndMixin, TimeTrackingMixin, models.Model):
+    """
+    Information about a given Post that a Person hold within an Organization
+
+    See: http://popoloproject.com/schemas/post.json
+    """
+    label = models.CharField(max_length=250)
+    role = models.CharField(max_length=250, null=True, blank=True)
+    organization = models.ForeignKey(Organization, related_name='posts')
+    contact_details = fields.OptionalManyToManyField(ContactDetail,
+            related_name='posts')
+    links = fields.OptionalManyToManyField(Link, related_name='posts')
+    sources = fields.OptionalManyToManyField(Source, related_name='posts')
+
+
+class Membership(ReducedDateStartAndEndMixin, TimeTrackingMixin, models.Model):
+    label = models.CharField(max_length=250)
+    role = models.CharField(max_length=250)
+    person = models.ForeignKey('Person', related_name='memberships')
+    organization = models.ForeignKey(Organization, related_name='members')
+    post = models.ForeignKey(Post, related_name='members', null=True,
+            blank=True)
+    contact_details = fields.OptionalManyToManyField(ContactDetail,
+            related_name='memberships')
+    links = fields.OptionalManyToManyField(Link, related_name='memberships')
+    sources = fields.OptionalManyToManyField(Source, related_name='memberships')
+
+
+class Person(TimeTrackingMixin, models.Model):
+    organization = models.ManyToManyField(Organization, through=Membership,
+            related_name='member')
+    name = models.CharField(max_length=250)
+    other_names = models.OptionalManyToManyField(OtherNames,
+            related_name='people')
+    identifiers = models.OptionalManyToManyField(Identifier,
+            related_name='people')
+    family_name = fields.OptionalCharField(max_length=250)
+    given_name = fields.OptionalCharField(max_length=250)
+    additional_name = fields.OptionalCharField(max_length=250)
+    honorific_prefix = fields.OptionalCharField(max_length=250)
+    honorific_suffix = fields.OptionalCharField(max_length=250)
+    patronymic_name = fields.OptionalCharField(max_length=250)
+    sort_name = fields.OptionalCharField(max_length=250)
+    email = fields.OptionalCharField(max_length=250)
+    gender = fields.OptionalCharField(max_length=10)
+    birth_date = fields.OptionalReducedDateField()
+    death_date = fields.OptionalReducedDateField()
+    image = models.ImageField(null=True, blank=True)
+    summary = models.OptionalCharField(max_length=250)
+    biography = models.TextField(blank=True, null=True)
+    contact_details = fields.OptionalManyToManyField(ContactDetail,
+            related_name='people')
+    links = fields.OptionalManyToManyField(Link, related_name='people')
+    sources = fields.OptionalManyToManyField(Source, related_name='people')
