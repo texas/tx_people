@@ -74,6 +74,25 @@ class OptionalCharField(TestCase):
         self.assertFalse(self.generate_random_field(blank=False).blank)
 
 
+class OptionalReducedDateFieldTestCase(ReducedDateFieldTestCase):
+    def generate_random_field(self, **kwargs):
+        return fields.OptionalReducedDateField(**kwargs)
+
+    def setUp(self):
+        self.field = self.generate_random_field()
+
+    def test_is_a_charfield_subclass(self):
+        self.assert_(fields.ReducedDateField in self.field.__class__.__mro__)
+
+    def test_null_defaults_to_true(self):
+        self.assertTrue(self.field.null)
+        self.assertFalse(self.generate_random_field(null=False).null)
+
+    def test_blank_defaults_to_true(self):
+        self.assertTrue(self.field.blank)
+        self.assertFalse(self.generate_random_field(blank=False).blank)
+
+
 class OptionalManyToManyField(TestCase):
     def generate_random_field(self, **kwargs):
         return fields.OptionalManyToManyField(models.Person, **kwargs)

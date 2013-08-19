@@ -14,6 +14,16 @@ class ReducedDateField(models.CharField):
         return super(ReducedDateField, self).__init__(*args, **kwargs)
 
 
+class OptionalReducedDateField(ReducedDateField):
+    def __init__(self, *args, **kwargs):
+        defaults = {
+            'blank': True,
+            'null': True,
+        }
+        defaults.update(**kwargs)
+        return super(OptionalReducedDateField, self).__init__(*args, **defaults)
+
+
 class OptionalCharField(models.CharField):
     def __init__(self, *args, **kwargs):
         defaults = {
