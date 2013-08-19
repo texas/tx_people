@@ -12,3 +12,14 @@ class ReducedDateField(models.CharField):
             'validators': validators,
         })
         return super(ReducedDateField, self).__init__(*args, **kwargs)
+
+
+class SourceRelationship(models.ManyToManyField):
+    def __init__(self, *args, **kwargs):
+        defaults = {
+            'blank': True,
+            'null': True,
+            'related_name': 'sources',
+        }
+        defaults.update(**kwargs)
+        return super(SourceRelationship, self).__init__(*args, **defaults)

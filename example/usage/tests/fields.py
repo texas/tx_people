@@ -1,9 +1,11 @@
 import random
 
 from django.core.exceptions import ValidationError
+from django.db.models import ManyToManyField
 from django.test import TestCase
 
 from tx_people import fields
+from tx_people import models
 from tx_people import utils
 
 from ._utils import RandomDatesMixin
@@ -50,3 +52,22 @@ class ReducedDateFieldTestCase(RandomDatesMixin, TestCase):
         field = fields.ReducedDateField(validators=[self, ])
         self.assert_(self in field.validators)
         self.assert_(utils.valid_reduced_date in field.validators)
+
+
+class SourceRelationshipTestCase(TestCase):
+    def generate_random_field(self, **kwargs):
+        return fields.SourceRelationship(models.Person, **kwargs)
+
+    def setUp(self):
+        self.field = self.generate_random_field()
+
+    def test_is_a_many_to_many_subclass(self):
+        self.assert_(ManyToManyField in self.field.__class__.__mro__)
+
+    def test_null_defaults_to_true(self):
+        self.assertTrue(self.field.null)
+        self.assertFalse(self.generate_random_field(null=False).null)
+
+    def test_blank_defaults_to_true(self):
+        self.assertTrue(self.field.blank)
+        self.assertFalse(self.generate_random_field(blank=False).blank)

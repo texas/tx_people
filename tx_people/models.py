@@ -101,3 +101,16 @@ class Link(models.Model):
     note = models.TextField()
 
     # TODO: allow relationship to an Organization or Person
+
+
+class Source(models.Model):
+    """
+    Model to keep track of source information.
+
+    A ``Source`` can apply to one or more ``Person``, ``Post``, or
+    ``Organization`` models.
+    """
+    link = models.URLField()
+    people = fields.SourceRelationship(Person)
+    posts = fields.SourceRelationship(Post)
+    organizations = fields.SourceRelationship(Organization)
