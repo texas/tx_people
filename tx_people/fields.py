@@ -14,12 +14,11 @@ class ReducedDateField(models.CharField):
         return super(ReducedDateField, self).__init__(*args, **kwargs)
 
 
-class SourceRelationship(models.ManyToManyField):
+class OptionalManyToManyField(models.ManyToManyField):
     def __init__(self, *args, **kwargs):
         defaults = {
             'blank': True,
             'null': True,
-            'related_name': 'sources',
         }
         defaults.update(**kwargs)
-        return super(SourceRelationship, self).__init__(*args, **defaults)
+        return super(OptionalManyToManyField, self).__init__(*args, **defaults)
