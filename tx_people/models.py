@@ -2,25 +2,8 @@ from django.db import models
 
 # TODO: Find a better location for this
 from . import fields
-
-
-class ReducedDateStartAndEndMixin(models.Model):
-    class Meta:
-        abstract = True
-
-    start_date = fields.ReducedDateField()
-    end_date = fields.ReducedDateField()
-
-
-class TimeTrackingMixin(models.Model):
-    """
-    Mixin for adding a created_at and updated_at field
-    """
-    class Meta:
-        abstract = True
-
-    created_at = models.DateTimeField(auto_now=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
+from . import mixins
+from .conf import settings
 
 
 class OtherNames(models.Model):
@@ -65,7 +48,7 @@ class Source(models.Model):
     link = models.URLField()
 
 
-class ContactDetail(TimeTrackingMixin, models.Model):
+class ContactDetail(mixins.TimeTrackingMixin, models.Model):
     """
     Contact Details for Persons, Organizations, or Posts
 
@@ -79,7 +62,7 @@ class ContactDetail(TimeTrackingMixin, models.Model):
         related_name='contact_detail')
 
 
-class Organization(TimeTrackingMixin, models.Model):
+class Organization(mixins.TimeTrackingMixin, models.Model):
     """
     Represents an Organization
 
@@ -103,7 +86,8 @@ class Organization(TimeTrackingMixin, models.Model):
             related_name='organizations')
 
 
-class Post(ReducedDateStartAndEndMixin, TimeTrackingMixin, models.Model):
+class Post(mixins.ReducedDateStartAndEndMixin, mixins.TimeTrackingMixin,
+        models.Model):
     """
     Information about a given Post that a Person hold within an Organization
 
@@ -118,7 +102,8 @@ class Post(ReducedDateStartAndEndMixin, TimeTrackingMixin, models.Model):
     sources = fields.OptionalManyToManyField(Source, related_name='posts')
 
 
-class Membership(ReducedDateStartAndEndMixin, TimeTrackingMixin, models.Model):
+class Membership(mixins.ReducedDateStartAndEndMixin, mixins.TimeTrackingMixin,
+        models.Model):
     label = models.CharField(max_length=250)
     role = models.CharField(max_length=250)
     person = models.ForeignKey('Person', related_name='memberships')
@@ -131,7 +116,7 @@ class Membership(ReducedDateStartAndEndMixin, TimeTrackingMixin, models.Model):
     sources = fields.OptionalManyToManyField(Source, related_name='memberships')
 
 
-class Person(TimeTrackingMixin, models.Model):
+class Person(mixins.TimeTrackingMixin, models.Model):
     organization = models.ManyToManyField(Organization, through=Membership,
             related_name='member')
     name = models.CharField(max_length=250)
@@ -150,7 +135,8 @@ class Person(TimeTrackingMixin, models.Model):
     gender = fields.OptionalCharField(max_length=10)
     birth_date = fields.OptionalReducedDateField()
     death_date = fields.OptionalReducedDateField()
-    image = models.ImageField(null=True, blank=True)
+    image = models.ImageField(upload_to=settings.TX_PEOPLE_UPLOAD_TO,
+            null=True, blank=True)
     summary = fields.OptionalCharField(max_length=250)
     biography = models.TextField(blank=True, null=True)
     contact_details = fields.OptionalManyToManyField(ContactDetail,
