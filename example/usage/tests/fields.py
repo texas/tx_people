@@ -1,7 +1,7 @@
 import random
 
 from django.core.exceptions import ValidationError
-from django.db.models import ManyToManyField
+from django.db.models import CharField, ManyToManyField
 from django.test import TestCase
 
 from tx_people import fields
@@ -54,9 +54,29 @@ class ReducedDateFieldTestCase(RandomDatesMixin, TestCase):
         self.assert_(utils.valid_reduced_date in field.validators)
 
 
-class SourceRelationshipTestCase(TestCase):
+class OptionalCharField(TestCase):
     def generate_random_field(self, **kwargs):
-        return fields.SourceRelationship(models.Person, **kwargs)
+        r = random.randint(10, 250)
+        return fields.OptionalCharField(max_length=r, **kwargs)
+
+    def setUp(self):
+        self.field = self.generate_random_field()
+
+    def test_is_a_charfield_subclass(self):
+        self.assert_(CharField in self.field.__class__.__mro__)
+
+    def test_null_defaults_to_true(self):
+        self.assertTrue(self.field.null)
+        self.assertFalse(self.generate_random_field(null=False).null)
+
+    def test_blank_defaults_to_true(self):
+        self.assertTrue(self.field.blank)
+        self.assertFalse(self.generate_random_field(blank=False).blank)
+
+
+class OptionalManyToManyField(TestCase):
+    def generate_random_field(self, **kwargs):
+        return fields.OptionalManyToManyField(models.Person, **kwargs)
 
     def setUp(self):
         self.field = self.generate_random_field()
