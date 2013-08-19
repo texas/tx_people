@@ -4,6 +4,21 @@ from . import utils
 
 
 class ReducedDateField(models.CharField):
+    """
+    Provides a means of storing an `ISO-8601:2004`_ reduced date
+
+    This is meant to be a fuzzy date, allowing for the following types
+    of dates to be stored:
+
+    * YYYY
+    * YYYY-MM
+    * YYYY-MM-DD
+
+    This relies on the ``utils.valid_reduced_date`` validator to ensure
+    that the date follows the correct pattern and is a valid date.
+
+    .. _ISO-8601:2004: https://github.com/opennorth/popolo-spec/wiki/ISO-8601%3A2004-formats
+    """
     def __init__(self, *args, **kwargs):
         validators = kwargs.get('validators', [])
         validators.append(utils.valid_reduced_date)
@@ -15,6 +30,9 @@ class ReducedDateField(models.CharField):
 
 
 class OptionalReducedDateField(ReducedDateField):
+    """
+    Same as ``ReducedDateField``, except it is not required
+    """
     def __init__(self, *args, **kwargs):
         defaults = {
             'blank': True,
@@ -25,6 +43,7 @@ class OptionalReducedDateField(ReducedDateField):
 
 
 class OptionalCharField(models.CharField):
+    """Same as Django's built-in ``CharField``, except optional"""
     def __init__(self, *args, **kwargs):
         defaults = {
             'blank': True,
@@ -35,6 +54,7 @@ class OptionalCharField(models.CharField):
 
 
 class OptionalManyToManyField(models.ManyToManyField):
+    """Same as Django's built-in ``ManyToManyField``, except optional"""
     def __init__(self, *args, **kwargs):
         defaults = {
             'blank': True,
