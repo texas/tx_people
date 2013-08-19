@@ -104,6 +104,11 @@ class Post(mixins.ReducedDateStartAndEndMixin, mixins.TimeTrackingMixin,
 
 class Membership(mixins.ReducedDateStartAndEndMixin, mixins.TimeTrackingMixin,
         models.Model):
+    """
+    Represents a Person
+
+    See: http://popoloproject.com/schemas/membership.json
+    """
     label = models.CharField(max_length=250)
     role = models.CharField(max_length=250)
     person = models.ForeignKey('Person', related_name='memberships')
@@ -117,6 +122,11 @@ class Membership(mixins.ReducedDateStartAndEndMixin, mixins.TimeTrackingMixin,
 
 
 class Person(mixins.TimeTrackingMixin, models.Model):
+    """
+    Represents a Person
+
+    See: http://popoloproject.com/schemas/person.json
+    """
     organization = models.ManyToManyField(Organization, through=Membership,
             related_name='member')
     name = models.CharField(max_length=250)
