@@ -1,6 +1,5 @@
 from django.db import models
 
-# TODO: Find a better location for this
 from . import fields
 from . import mixins
 from .conf import settings
