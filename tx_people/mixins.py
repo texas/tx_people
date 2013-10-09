@@ -30,6 +30,23 @@ class TimeTrackingMixin(models.Model):
     updated_at = models.DateTimeField(auto_now_add=True)
 
 
+class OptionalLabelAndRoleMixin(models.Model):
+    """
+    Provides an optional ``label`` and ``role`` field
+
+    This is shared by both ``Post`` and ``Membership``.
+    """
+
+    class Meta:
+        abstract = True
+
+    label = models.CharField(max_length=250, null=True, blank=True)
+    role = models.CharField(max_length=250, null=True, blank=True)
+
+    def __unicode__(self):
+        return self.label
+
+
 def create_named_entities_mixin(related_name):
     class NameMixin(models.Model):
         """
