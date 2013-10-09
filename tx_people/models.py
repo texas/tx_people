@@ -61,16 +61,15 @@ class ContactDetail(mixins.TimeTrackingMixin, models.Model):
         related_name='contact_detail')
 
 
-class Organization(mixins.TimeTrackingMixin, models.Model):
+class Organization(mixins.TimeTrackingMixin,
+        mixins.create_named_entities_mixin(related_name='organizations'),
+        models.Model):
     """
     Represents an Organization
 
     See: http://popoloproject.com/schemas/organization.json
     """
 
-    name = models.CharField(max_length=250)
-    other_name = fields.OptionalManyToManyField(OtherNames,
-            related_name='organizations')
     identifiers = fields.OptionalManyToManyField(Identifier,
             related_name='organizations')
     classification = models.CharField(max_length=250, null=True, blank=True)
@@ -120,7 +119,9 @@ class Membership(mixins.ReducedDateStartAndEndMixin, mixins.TimeTrackingMixin,
     sources = fields.OptionalManyToManyField(Source, related_name='memberships')
 
 
-class Person(mixins.TimeTrackingMixin, models.Model):
+class Person(mixins.TimeTrackingMixin,
+        mixins.create_named_entities_mixin(related_name='people'),
+        models.Model):
     """
     Represents a Person
 
@@ -128,9 +129,6 @@ class Person(mixins.TimeTrackingMixin, models.Model):
     """
     organization = models.ManyToManyField(Organization, through=Membership,
             related_name='member')
-    name = models.CharField(max_length=250)
-    other_names = fields.OptionalManyToManyField(OtherNames,
-            related_name='people')
     identifiers = fields.OptionalManyToManyField(Identifier,
             related_name='people')
     family_name = fields.OptionalCharField(max_length=250)
