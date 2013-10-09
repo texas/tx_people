@@ -47,13 +47,13 @@ class Source(models.Model):
     link = models.URLField()
 
 
-class ContactDetail(mixins.TimeTrackingMixin, models.Model):
+class ContactDetail(mixins.TimeTrackingMixin, mixins.OptionalLabelMixin,
+        models.Model):
     """
     Contact Details for Persons, Organizations, or Posts
 
     See: http://popoloproject.com/schemas/contact_detail.json
     """
-    label = models.CharField(max_length=250, null=True, blank=True)
     type = models.CharField(max_length=250)
     value = models.CharField(max_length=250)
     note = models.TextField(null=True, blank=True)

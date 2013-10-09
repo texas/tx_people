@@ -30,7 +30,22 @@ class TimeTrackingMixin(models.Model):
     updated_at = models.DateTimeField(auto_now_add=True)
 
 
-class OptionalLabelAndRoleMixin(models.Model):
+class OptionalLabelMixin(models.Model):
+    """
+    Provides an optional ``label`` field and default ``__unicode__``
+
+    """
+
+    class Meta:
+        abstract = True
+
+    label = models.CharField(max_length=250, null=True, blank=True)
+
+    def __unicode__(self):
+        return self.label
+
+
+class OptionalLabelAndRoleMixin(OptionalLabelMixin, models.Model):
     """
     Provides an optional ``label`` and ``role`` field
 
@@ -40,11 +55,7 @@ class OptionalLabelAndRoleMixin(models.Model):
     class Meta:
         abstract = True
 
-    label = models.CharField(max_length=250, null=True, blank=True)
     role = models.CharField(max_length=250, null=True, blank=True)
-
-    def __unicode__(self):
-        return self.label
 
 
 def create_named_entities_mixin(related_name):
