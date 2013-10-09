@@ -16,6 +16,9 @@ class OtherNames(models.Model):
     end_date = models.DateField(null=True, blank=True)
     note = models.TextField(null=True, blank=True)
 
+    def __unicode__(self):
+        return self.name
+
 
 class Identifier(models.Model):
     """
@@ -25,6 +28,10 @@ class Identifier(models.Model):
     """
     identifier = models.CharField(max_length=250)
     scheme = models.CharField(max_length=250, null=True, blank=True)
+
+    def __unicode__(self):
+        return u'{scheme}://{identifier}'.format(scheme=self.scheme,
+                identifier=self.identifier)
 
 
 class Link(models.Model):
@@ -36,6 +43,9 @@ class Link(models.Model):
     url = models.URLField()
     note = models.TextField()
 
+    def __unicode__(self):
+        return self.url
+
 
 class Source(models.Model):
     """
@@ -45,6 +55,9 @@ class Source(models.Model):
     ``Organization`` models.
     """
     link = models.URLField()
+
+    def __unicode__(self):
+        return self.link
 
 
 class ContactDetail(mixins.TimeTrackingMixin, mixins.OptionalLabelMixin,
