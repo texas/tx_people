@@ -28,3 +28,54 @@ class TimeTrackingMixin(models.Model):
 
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
+
+
+class OptionalLabelMixin(models.Model):
+    """
+    Provides an optional ``label`` field and default ``__unicode__``
+
+    """
+
+    class Meta:
+        abstract = True
+
+    label = models.CharField(max_length=250, null=True, blank=True)
+
+    def __unicode__(self):
+        return self.label
+
+
+class OptionalLabelAndRoleMixin(OptionalLabelMixin, models.Model):
+    """
+    Provides an optional ``label`` and ``role`` field
+
+    This is shared by both ``Post`` and ``Membership``.
+    """
+
+    class Meta:
+        abstract = True
+
+    role = models.CharField(max_length=250, null=True, blank=True)
+
+
+def create_named_entities_mixin(related_name):
+    class NameMixin(models.Model):
+        """
+        Provides a ``name`` and ``other_name`` field and __unicode__ method
+
+        This is shared by both ``Organization`` and ``Person``, both of
+        which have a ``name`` and ``other_name``.  The ``related_name`
+        argument is used to set up the reversed name.
+        """
+
+        class Meta:
+            abstract = True
+
+        name = models.CharField(max_length=250)
+        other_name = fields.OptionalManyToManyField('OtherNames',
+                related_name=related_name)
+
+        def __unicode__(self):
+            return self.name
+
+    return NameMixin
