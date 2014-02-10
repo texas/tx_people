@@ -3,5 +3,4 @@ South>=0.8.3
 dj-database-url==0.2.1
 dj-settings-helpers==1.0.0
 factory-boy==2.1.2
-django-appconf==0.6
-PIL==1.1.7
+-r ../requirements.txt

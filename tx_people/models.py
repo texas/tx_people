@@ -1,4 +1,6 @@
 from django.db import models
+from model_utils.managers import InheritanceManager
+
 
 from . import fields
 from . import mixins
@@ -28,6 +30,8 @@ class Identifier(models.Model):
     """
     identifier = models.CharField(max_length=250)
     scheme = models.CharField(max_length=250, null=True, blank=True)
+
+    objects = InheritanceManager()
 
     def __unicode__(self):
         return u'{scheme}://{identifier}'.format(scheme=self.scheme,
@@ -96,6 +100,8 @@ class Organization(mixins.TimeTrackingMixin,
     sources = fields.OptionalManyToManyField(Source,
             related_name='organizations')
 
+    objects = InheritanceManager()
+
 
 class Post(mixins.ReducedDateStartAndEndMixin, mixins.TimeTrackingMixin,
         mixins.OptionalLabelAndRoleMixin, models.Model):
@@ -109,6 +115,8 @@ class Post(mixins.ReducedDateStartAndEndMixin, mixins.TimeTrackingMixin,
             related_name='posts')
     links = fields.OptionalManyToManyField(Link, related_name='posts')
     sources = fields.OptionalManyToManyField(Source, related_name='posts')
+
+    objects = InheritanceManager()
 
 
 class Membership(mixins.ReducedDateStartAndEndMixin, mixins.TimeTrackingMixin,
@@ -126,6 +134,8 @@ class Membership(mixins.ReducedDateStartAndEndMixin, mixins.TimeTrackingMixin,
             related_name='memberships')
     links = fields.OptionalManyToManyField(Link, related_name='memberships')
     sources = fields.OptionalManyToManyField(Source, related_name='memberships')
+
+    objects = InheritanceManager()
 
 
 class Person(mixins.TimeTrackingMixin,
@@ -159,3 +169,5 @@ class Person(mixins.TimeTrackingMixin,
             related_name='people')
     links = fields.OptionalManyToManyField(Link, related_name='people')
     sources = fields.OptionalManyToManyField(Source, related_name='people')
+
+    objects = InheritanceManager()

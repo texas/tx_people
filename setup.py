@@ -27,11 +27,13 @@ for dirpath, dirnames, filenames in os.walk('tx_people'):
 
 setup(
     name='tx_people',
-    version='0.3.0',
+    version='0.4.0',
     description='Texas Tribune: tx_people',
     author='Tribune Tech',
     author_email='tech@texastribune.org',
-    url='http://github.com/texastribune/tx_people/',
+    url='https://github.com/texas/tx_people/',
+    install_requires=[a.strip() for a in
+            open('./requirements.txt', 'rb').readlines()],
     packages=packages,
     package_data={'tx_people': data_files},
     classifiers=[
