@@ -59,9 +59,14 @@ class PostAdmin(admin.ModelAdmin):
     search_fields = ('label', 'organization__name', )
 
 
+class SourceAdmin(admin.ModelAdmin):
+    search_fields = ('link', )
+
+
 admin.site.register(models.ContactDetail, ContactDetailAdmin)
 admin.site.register(models.Identifier, IdentifierAdmin)
 admin.site.register(models.Membership, MembershipAdmin)
 admin.site.register(models.Organization, OrganizationAdmin)
 admin.site.register(models.Person, PeopleAdmin)
 admin.site.register(models.Post, PostAdmin)
+admin.site.register(models.Source, SourceAdmin)
