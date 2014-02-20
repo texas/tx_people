@@ -24,6 +24,10 @@ class ParentOrganizationFilter(admin.SimpleListFilter):
         return queryset
 
 
+class ContactDetailAdmin(admin.ModelAdmin):
+    raw_id_fields = ('sources', )
+
+
 class IdentifierAdmin(admin.ModelAdmin):
     list_display = ('scheme', 'identifier', )
     list_display_links = ('identifier', )
@@ -55,6 +59,7 @@ class PostAdmin(admin.ModelAdmin):
     search_fields = ('label', 'organization__name', )
 
 
+admin.site.register(models.ContactDetail, ContactDetailAdmin)
 admin.site.register(models.Identifier, IdentifierAdmin)
 admin.site.register(models.Membership, MembershipAdmin)
 admin.site.register(models.Organization, OrganizationAdmin)
