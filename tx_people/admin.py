@@ -54,6 +54,11 @@ class OrganizationAdmin(admin.ModelAdmin):
     search_fields = ('name', )
 
 
+class OtherNameAdmin(admin.ModelAdmin):
+    list_display = ('name', 'start_date', 'end_date', )
+    search_fields = ('name', )
+
+
 class PeopleAdmin(admin.ModelAdmin):
     raw_id_fields = ('identifiers', 'contact_details', 'links', 'sources', )
     search_fields = ('name', 'email', )
@@ -73,6 +78,7 @@ admin.site.register(models.Identifier, IdentifierAdmin)
 admin.site.register(models.Link, LinkAdmin)
 admin.site.register(models.Membership, MembershipAdmin)
 admin.site.register(models.Organization, OrganizationAdmin)
+admin.site.register(models.OtherNames, OtherNameAdmin)
 admin.site.register(models.Person, PeopleAdmin)
 admin.site.register(models.Post, PostAdmin)
 admin.site.register(models.Source, SourceAdmin)
