@@ -35,6 +35,11 @@ class IdentifierAdmin(admin.ModelAdmin):
     search_fields = ('identifier', 'people__name', )
 
 
+class LinkAdmin(admin.ModelAdmin):
+    list_display = ('url', 'note', )
+    search_fields = ('url', 'note', )
+
+
 class MembershipAdmin(admin.ModelAdmin):
     list_display = ('person', 'organization', 'post', )
     list_filter = ('organization', )
@@ -65,6 +70,7 @@ class SourceAdmin(admin.ModelAdmin):
 
 admin.site.register(models.ContactDetail, ContactDetailAdmin)
 admin.site.register(models.Identifier, IdentifierAdmin)
+admin.site.register(models.Link, LinkAdmin)
 admin.site.register(models.Membership, MembershipAdmin)
 admin.site.register(models.Organization, OrganizationAdmin)
 admin.site.register(models.Person, PeopleAdmin)
