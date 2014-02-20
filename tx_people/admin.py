@@ -22,6 +22,12 @@ class PeopleAdmin(admin.ModelAdmin):
     search_fields = ('name', 'email', )
 
 
+class PostAdmin(admin.ModelAdmin):
+    list_display = ('label', 'organization', )
+    search_fields = ('label', 'organization__name', )
+
+
 admin.site.register(models.Identifier, IdentifierAdmin)
 admin.site.register(models.Membership, MembershipAdmin)
 admin.site.register(models.Person, PeopleAdmin)
+admin.site.register(models.Post, PostAdmin)
