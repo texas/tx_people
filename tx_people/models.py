@@ -102,6 +102,12 @@ class Organization(mixins.TimeTrackingMixin,
 
     objects = InheritanceManager()
 
+    def __unicode__(self):
+        if self.parent:
+            return u'{parent} > {self}'.format(parent=self.parent,
+                    self=self.name)
+        return self.name
+
 
 class Post(mixins.ReducedDateStartAndEndMixin, mixins.TimeTrackingMixin,
         mixins.OptionalLabelAndRoleMixin, models.Model):
