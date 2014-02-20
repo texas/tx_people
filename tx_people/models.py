@@ -102,6 +102,12 @@ class Organization(mixins.TimeTrackingMixin,
 
     objects = InheritanceManager()
 
+    def __unicode__(self):
+        if self.parent:
+            return u'{parent} > {self}'.format(parent=self.parent,
+                    self=self.name)
+        return self.name
+
 
 class Post(mixins.ReducedDateStartAndEndMixin, mixins.TimeTrackingMixin,
         mixins.OptionalLabelAndRoleMixin, models.Model):
@@ -136,6 +142,10 @@ class Membership(mixins.ReducedDateStartAndEndMixin, mixins.TimeTrackingMixin,
     sources = fields.OptionalManyToManyField(Source, related_name='memberships')
 
     objects = InheritanceManager()
+
+    def __unicode__(self):
+        return u'{person} belongs to {organization}'.format(person=self.person,
+                organization=self.organization)
 
 
 class Person(mixins.TimeTrackingMixin,
