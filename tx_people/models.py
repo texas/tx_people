@@ -137,6 +137,10 @@ class Membership(mixins.ReducedDateStartAndEndMixin, mixins.TimeTrackingMixin,
 
     objects = InheritanceManager()
 
+    def __unicode__(self):
+        return u'{person} belongs to {organization}'.format(person=self.person,
+                organization=self.organization)
+
 
 class Person(mixins.TimeTrackingMixin,
         mixins.create_named_entities_mixin(related_name='people'),
