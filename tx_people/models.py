@@ -7,6 +7,18 @@ from . import mixins
 from .conf import settings
 
 
+class Race(models.Model):
+    """
+    Custom ManyToMany field to handle ethnicity.
+
+    Currently does not have a parallel to Popolo spec.
+    """
+    name = models.CharField(max_length=250)
+
+    def __unicode__(self):
+        return self.name
+
+
 class OtherNames(models.Model):
     """
     Other current or previous names for an Organization or Person
@@ -169,7 +181,7 @@ class Person(mixins.TimeTrackingMixin,
     sort_name = fields.OptionalCharField(max_length=250)
     email = fields.OptionalCharField(max_length=250)
     gender = fields.OptionalCharField(max_length=10)
-    race = fields.OptionalCharField(max_length=250)
+    race = fields.OptionalManyToManyField(Race, related_name='people')
     birth_date = fields.OptionalReducedDateField()
     death_date = fields.OptionalReducedDateField()
     image = models.ImageField(upload_to=settings.TX_PEOPLE_UPLOAD_TO,
