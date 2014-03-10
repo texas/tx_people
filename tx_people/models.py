@@ -169,6 +169,7 @@ class Person(mixins.TimeTrackingMixin,
     sort_name = fields.OptionalCharField(max_length=250)
     email = fields.OptionalCharField(max_length=250)
     gender = fields.OptionalCharField(max_length=10)
+    race = fields.OptionalCharField(max_length=250)
     birth_date = fields.OptionalReducedDateField()
     death_date = fields.OptionalReducedDateField()
     image = models.ImageField(upload_to=settings.TX_PEOPLE_UPLOAD_TO,
