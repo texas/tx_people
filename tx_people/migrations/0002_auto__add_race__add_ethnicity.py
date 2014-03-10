@@ -8,12 +8,28 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Adding model 'Race'
+        db.create_table(u'tx_people_race', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=250)),
+        ))
+        db.send_create_signal(u'tx_people', ['Race'])
+
         # Adding model 'Ethnicity'
         db.create_table(u'tx_people_ethnicity', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=250)),
         ))
         db.send_create_signal(u'tx_people', ['Ethnicity'])
+
+        # Adding M2M table for field races on 'Person'
+        m2m_table_name = db.shorten_name(u'tx_people_person_races')
+        db.create_table(m2m_table_name, (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('person', models.ForeignKey(orm[u'tx_people.person'], null=False)),
+            ('race', models.ForeignKey(orm[u'tx_people.race'], null=False))
+        ))
+        db.create_unique(m2m_table_name, ['person_id', 'race_id'])
 
         # Adding M2M table for field ethnicities on 'Person'
         m2m_table_name = db.shorten_name(u'tx_people_person_ethnicities')
@@ -26,8 +42,14 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
+        # Deleting model 'Race'
+        db.delete_table(u'tx_people_race')
+
         # Deleting model 'Ethnicity'
         db.delete_table(u'tx_people_ethnicity')
+
+        # Removing M2M table for field races on 'Person'
+        db.delete_table(db.shorten_name(u'tx_people_person_races'))
 
         # Removing M2M table for field ethnicities on 'Person'
         db.delete_table(db.shorten_name(u'tx_people_person_ethnicities'))
@@ -125,6 +147,7 @@ class Migration(SchemaMigration):
             'organization': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'member'", 'symmetrical': 'False', 'through': u"orm['tx_people.Membership']", 'to': u"orm['tx_people.Organization']"}),
             'other_name': ('tx_people.fields.OptionalManyToManyField', [], {'blank': 'True', 'related_name': "'people'", 'null': 'True', 'symmetrical': 'False', 'to': u"orm['tx_people.OtherNames']"}),
             'patronymic_name': ('tx_people.fields.OptionalCharField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
+            'races': ('tx_people.fields.OptionalManyToManyField', [], {'blank': 'True', 'related_name': "'people'", 'null': 'True', 'symmetrical': 'False', 'to': u"orm['tx_people.Race']"}),
             'sort_name': ('tx_people.fields.OptionalCharField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
             'sources': ('tx_people.fields.OptionalManyToManyField', [], {'blank': 'True', 'related_name': "'people'", 'null': 'True', 'symmetrical': 'False', 'to': u"orm['tx_people.Source']"}),
             'summary': ('tx_people.fields.OptionalCharField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
@@ -143,6 +166,11 @@ class Migration(SchemaMigration):
             'sources': ('tx_people.fields.OptionalManyToManyField', [], {'blank': 'True', 'related_name': "'posts'", 'null': 'True', 'symmetrical': 'False', 'to': u"orm['tx_people.Source']"}),
             'start_date': ('tx_people.fields.ReducedDateField', [], {'max_length': '10'}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'})
+        },
+        u'tx_people.race': {
+            'Meta': {'object_name': 'Race'},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '250'})
         },
         u'tx_people.source': {
             'Meta': {'object_name': 'Source'},
