@@ -7,6 +7,30 @@ from . import mixins
 from .conf import settings
 
 
+class Race(models.Model):
+    """
+    Custom ManyToMany field to handle race.
+
+    Currently does not have a parallel to Popolo spec.
+    """
+    name = models.CharField(max_length=250)
+
+    def __unicode__(self):
+        return self.name
+
+
+class Ethnicity(models.Model):
+    """
+    Custom ManyToMany field to handle ethnicity.
+
+    Currently does not have a parallel to Popolo spec.
+    """
+    name = models.CharField(max_length=250)
+
+    def __unicode__(self):
+        return self.name
+
+
 class OtherNames(models.Model):
     """
     Other current or previous names for an Organization or Person
@@ -179,5 +203,10 @@ class Person(mixins.TimeTrackingMixin,
             related_name='people')
     links = fields.OptionalManyToManyField(Link, related_name='people')
     sources = fields.OptionalManyToManyField(Source, related_name='people')
+
+    # Not included in Popolo spec
+    races = fields.OptionalManyToManyField(Race, related_name='people')
+    ethnicities = fields.OptionalManyToManyField(Ethnicity,
+            related_name='people')
 
     objects = InheritanceManager()
