@@ -193,9 +193,6 @@ class Person(mixins.TimeTrackingMixin,
     sort_name = fields.OptionalCharField(max_length=250)
     email = fields.OptionalCharField(max_length=250)
     gender = fields.OptionalCharField(max_length=10)
-    races = fields.OptionalManyToManyField(Race, related_name='people')
-    ethnicities = fields.OptionalManyToManyField(Ethnicity,
-            related_name='people')
     birth_date = fields.OptionalReducedDateField()
     death_date = fields.OptionalReducedDateField()
     image = models.ImageField(upload_to=settings.TX_PEOPLE_UPLOAD_TO,
@@ -206,5 +203,10 @@ class Person(mixins.TimeTrackingMixin,
             related_name='people')
     links = fields.OptionalManyToManyField(Link, related_name='people')
     sources = fields.OptionalManyToManyField(Source, related_name='people')
+
+    # Not included in Popolo spec
+    races = fields.OptionalManyToManyField(Race, related_name='people')
+    ethnicities = fields.OptionalManyToManyField(Ethnicity,
+            related_name='people')
 
     objects = InheritanceManager()
