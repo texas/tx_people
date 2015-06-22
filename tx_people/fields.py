@@ -58,18 +58,6 @@ class OptionalManyToManyField(models.ManyToManyField):
     def __init__(self, *args, **kwargs):
         defaults = {
             'blank': True,
-            'null': True,
         }
         defaults.update(**kwargs)
         return super(OptionalManyToManyField, self).__init__(*args, **defaults)
-
-
-# Provide South with the information required to process custom fields.
-#
-# This fails quietly if there is an ``ImportError`` as it none of this
-# matters if South isn't installed.
-try:
-    from south.modelsinspector import add_introspection_rules
-    add_introspection_rules([], ["^tx_people\.fields\..*Field"])
-except ImportError:
-    pass

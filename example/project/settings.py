@@ -122,7 +122,6 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 
     # Third-party dependencies
-    'south',
 
     # Custom application being tested
     'tx_people',
