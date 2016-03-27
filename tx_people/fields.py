@@ -58,7 +58,6 @@ class OptionalManyToManyField(models.ManyToManyField):
     def __init__(self, *args, **kwargs):
         defaults = {
             'blank': True,
-            'null': True,
         }
         defaults.update(**kwargs)
         return super(OptionalManyToManyField, self).__init__(*args, **defaults)
