@@ -71,7 +71,7 @@ def create_named_entities_mixin(related_name):
         class Meta:
             abstract = True
 
-        name = models.CharField(max_length=250)
+        name = models.CharField(max_length=250, db_index=True)
         other_name = fields.OptionalManyToManyField('OtherNames',
                 related_name=related_name)
 

@@ -57,6 +57,9 @@ class Identifier(models.Model):
 
     objects = InheritanceManager()
 
+    class Meta:
+        index_together = ('identifier', 'scheme',)
+
     def __unicode__(self):
         return u'{scheme}://{identifier}'.format(scheme=self.scheme,
                 identifier=self.identifier)
